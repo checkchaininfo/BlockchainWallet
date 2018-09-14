@@ -1,0 +1,190 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Admin panel</h2>
+
+    <div class="row tabsRow">
+      <ul class="nav nav-tabs">
+        <li [ngClass]="contentTabClass" class="tab" (click)="switchToContent()">
+          <a>Page Content</a>
+        </li>
+        <li [ngClass]="contractTabClass" class="tab" (click)="switchToContracts()">
+          <a>Smart Contracts</a>
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="isContractsOpened" class="col-md-10">
+
+      <div *ngIf="isStatusLoaded" class="row">
+        <p>Current Check Block : {{statusSync.currentBlock}}</p>
+        <p>Last Block : {{statusSync.lastBlockBl}}</p>
+      </div>
+
+      <form #myForm="ngForm" (ngSubmit)="getSmartContract(myForm)">
+
+        <div class="form-group">
+          <label for="addressBTC">Contract Address</label>
+          <input class="form-control" name="contractAddress" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary"> &nbsp; Get &nbsp;</button>
+        </div>
+        <div *ngIf="errors" class="alert alert-danger" role="alert">
+          {{errors}}
+        </div>
+      </form>
+      <form *ngIf="isGotContract" #myForm="ngForm" (ngSubmit)="updateContract(myForm)">
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input class="form-control" [(ngModel)]="token.name" name="name" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <label for="symbol">Symbol</label>
+          <input class="form-control" [(ngModel)]="token.symbol" name="symbol" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <label for="DecimalPlaces">Decimal Places</label>
+          <input class="form-control" [(ngModel)]="token.DecimalPlaces" name="DecimalPlaces" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <label for="webSiteLink">Web Site Link</label>
+          <input class="form-control" [(ngModel)]="token.webSiteLink" name="webSiteLink" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <label for="createdDate">Created date</label>
+          <input type="date" class="form-control" [ngModel]="token.createdDate | date:'yyyy-MM-dd'" (ngModelChange)="token.createdDate = $event" name="createdDate" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+        <div *ngIf="errors" class="alert alert-danger" role="alert">
+          {{errors}}
+        </div>
+
+      </form>
+    </div>
+
+    <div *ngIf="isContentOpened" class="col-md-10">
+
+      <form *ngIf="isRequested" #myForm="ngForm" (ngSubmit)="postData(myForm)">
+
+        <div class="form-group">
+          <label for="addressBTC">Tips BTC</label>
+          <input class="form-control" [(ngModel)]="addressBTC.elementData" name="addressBTC" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <label for="addressETH">Tips ETH</label>
+          <input class="form-control" [(ngModel)]="addressETH.elementData" name="addressETH" ngModel/>
+        </div>
+
+        <div class="form-group">
+          <label for="aboutPage">About Page</label>
+          <textarea class="form-control" rows="5" [(ngModel)]="aboutPage.elementData" name="aboutPage" ngModel></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="contactPage">Contact Page</label>
+          <textarea class="form-control" rows="5" [(ngModel)]="contactPage.elementData" name="contactPage" ngModel></textarea>
+        </div>
+
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+        <div *ngIf="errors" class="alert alert-danger" role="alert">
+          {{errors}}
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isContractsOpened" class="addNewContractRow row">
+  <div class="col-md-10">
+    <button class="btn btn-primary" (click)="newContract()"> Add New </button>
+    <form *ngIf="showAddNewContract" #myForm="ngForm" (ngSubmit)="addContract(myForm)">
+
+      <div class="form-group">
+        <label for="addressBTC">Address</label>
+        <input class="form-control" name="address" ngModel/>
+      </div>
+
+      <div class="form-group">
+        <label for="addressBTC">Name</label>
+        <input class="form-control" name="name" ngModel/>
+      </div>
+
+      <div class="form-group">
+        <label for="addressBTC">Symbol</label>
+        <input class="form-control" name="symbol" ngModel/>
+      </div>
+
+      <div class="form-group">
+        <label for="addressBTC">Decimal Places</label>
+        <input class="form-control" name="decimalPlaces" ngModel/>
+      </div>
+
+      <div class="form-group">
+        <label for="addressBTC">Web Site Link</label>
+        <input class="form-control" name="webSiteLink" ngModel/>
+      </div>
+
+      <div class="form-group">
+        <label for="addressBTC">Created date</label>
+        <input class="form-control" type="date" name="createdDate" ngModel/>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+      <div *ngIf="errors" class="alert alert-danger" role="alert">
+        {{errors}}
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<div *ngIf="isContractsOpened" class="col-md-10">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Address</th>
+      <th scope="col">Name</th>
+      <th scope="col">Symbol</th>
+      <th scope="col">Decimal Places</th>
+      <th scope="col">Web Site Link</th>
+      <th scope="col">Created date</th>
+      <th scope="col">IsSynchronized</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let tn of tokens">
+      <td title="{{tn.address}}">{{tn.address}}</td>
+      <td title="{{tn.name}}">{{tn.name}}</td>
+      <td title="{{tn.symbol}}">{{tn.symbol}}</td>
+      <td title="{{tn.DecimalPlaces}}">{{tn.DecimalPlaces}}</td>
+      <td title="{{tn.webSiteLink}}">{{tn.webSiteLink}}</td>
+      <td title="{{tn.createdDate}}">{{tn.createdDate | date : 'shortDate'}}</td>
+      <td title="{{tn.isSynchronized}}">{{tn.isSynchronized}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="row">
+    <div class="col-md-3">
+      <button class="btn btn-primary" (click)="saveLatestTransactions()"> Save Latest Transactions </button>
+    </div>
+  </div>
+
+</div>

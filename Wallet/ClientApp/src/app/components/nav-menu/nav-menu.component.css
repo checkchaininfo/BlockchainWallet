@@ -1,0 +1,21 @@
+.navbar-header a {
+  color: black;
+  font-size: 30px;
+}
+
+.navbar-header a p {
+  margin-top: 5px;
+  color: black;
+  font-size: 16px;
+}
+
+.navbar hr {
+  border-color: lightgray;
+}
+
+@media (max-width: 767px) {
+  /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
+  .container-fluid ul {
+    padding-top: 20px;
+  }
+}

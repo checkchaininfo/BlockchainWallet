@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <table *ngIf="requested" class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col"> Wallets </th>
+        <th scope="col"> Smart Contracts </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let entry of watchList">
+        <td class="tableRow">
+          <a [routerLink]='["/search/account", entry.account.address ]'>
+            {{ entry.account.address }}
+          </a>
+          <span *ngIf="entry.account.isNotificated" class="dot"></span>
+        </td>
+        <td class="tableRow">
+          <a [routerLink]='["/search/contract", entry.contract.address]'>
+            {{ entry.contract.address }}
+          </a>
+          <span *ngIf="entry.contract.isNotificated" class="dot"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

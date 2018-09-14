@@ -1,0 +1,28 @@
+.tableRow {
+  width: 50%;
+  cursor: pointer;
+  color: #0645AD;
+}
+
+.tableRow:hover {
+  text-decoration: underline;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  color: #3366BB;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.dot {
+  height: 15px;
+  width: 15px;
+  background-color: red;
+  border-radius: 50%;
+  margin-right: 15px;
+  float: right;
+}

@@ -1,0 +1,11 @@
+.tabsRow {
+  margin-bottom: 30px;
+}
+
+.tab {
+  cursor: pointer;
+}
+
+.addNewContractRow {
+  margin-left: 0px;
+}

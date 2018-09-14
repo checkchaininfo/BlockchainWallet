@@ -1,0 +1,245 @@
+<div *ngIf="showWarningMessage" class="row">
+  <div class="warnMessage col-md-3">
+    <p>This will take some time.</p>
+  </div>
+</div>
+
+<div *ngIf="showNotWind" class="notificationWindow container-fluid">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-8">
+      <div class="closeDiv">
+        <span (click)="closeNotificationWindow()" class="glyphicon glyphicon-remove"></span>
+      </div>
+    </div>
+  </div>
+  <div class="row text-center">
+
+    <div class="col-md-4 col-md-offset-4">
+      <h4>Notifications</h4>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+
+      <form>
+
+        <div class="form-check">
+          <input class="form-check-input notificationInput" type="checkbox" [checked]="notificationOptions.isWithoutNotifications"
+                 (change)="notificationOptions.isWithoutNotifications = !notificationOptions.isWithoutNotifications">
+          Without notifications
+        </div>
+
+        <div class="form-check">
+          <input (change)="notificationOptions.whenNumberOfContractTokenWasSent = !notificationOptions.whenNumberOfContractTokenWasSent" [checked]="notificationOptions.whenNumberOfContractTokenWasSent"
+                 class="form-check-input notificationInput" type="checkbox" [disabled]="notificationOptions.isWithoutNotifications">
+          When
+          <input [(ngModel)]="notificationOptions.numberOfContractTokenWasSent" name="numberOfContractTokenWasSent" placeholder="number" class="notificationSmallInput form-check-input"
+                 [disabled]="notificationOptions.isWithoutNotifications || !notificationOptions.whenNumberOfContractTokenWasSent">
+          was sent
+        </div>
+
+        <div class="form-check">
+          <input (change)="notificationOptions.whenNumberOfContractWasReceivedByAddress = !notificationOptions.whenNumberOfContractWasReceivedByAddress" [checked]="notificationOptions.whenNumberOfContractWasReceivedByAddress"
+                 class="form-check-input notificationInput" type="checkbox" [disabled]="notificationOptions.isWithoutNotifications">
+          When
+          <input [(ngModel)]="notificationOptions.numberOfTokenWasReceivedByAddress" name="numberOfTokenWasReceivedByAddress" placeholder="number" class="notificationSmallInput form-check-input"
+                 [disabled]="notificationOptions.isWithoutNotifications || !notificationOptions.whenNumberOfContractWasReceivedByAddress">
+          were received by <br />
+          <input [(ngModel)]="notificationOptions.addressThatReceivedNumberOfToken" name="addressThatReceivedNumberOfToken" placeholder="wallet or smart contract address"
+                 class="notificationBigInput form-check-input" [disabled]="notificationOptions.isWithoutNotifications || !notificationOptions.whenNumberOfContractWasReceivedByAddress">
+        </div>
+
+        <div class="form-group">
+          <button (click)="setNotification()"
+                  type="submit" [disabled]="isRequesting" class="notificationButton btn btn-primary">
+            Submit
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="errors" class="alert alert-danger" role="alert">
+  Opps, some error occurred. Try again
+</div>
+
+<div *ngIf="infoRequesting" class="row">
+  <div class="col-sm-4">
+    <div class="divInfo">
+      <h4 class="addressString">Smart Contract Address <span (click)="showNotificationWindow()" class="addStar glyphicon glyphicon-star-empty"></span></h4>
+      <div>
+        <p>Name</p>
+        <p class="info">{{smartContractInfo.name}} ({{smartContractInfo.symbol}})</p>
+      </div>
+      <div>
+        <p>Created</p>
+        <p class="info">{{smartContractInfo.createdDate | date : 'shortDate'}}</p>
+      </div>
+      <div>
+        <p>Quantity</p>
+        <p class="info">{{smartContractInfo.quantity | number : '1.2-10'}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-4 col-sm-offset-4 rightSideBlock">
+    <div class="divInfo">
+      <h5>{{searchString}}</h5>
+      <div>
+        <p>Wallets</p>
+        <p class="info">{{smartContractInfo.walletsCount}}</p>
+      </div>
+      <div>
+        <p>Transactions</p>
+        <p class="info">{{smartContractInfo.transactionsCount}}</p>
+      </div>
+      <div>
+        <a target="_blank" href="{{smartContractInfo.webSiteLink}}">{{smartContractInfo.webSiteLink}}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!infoRequesting||!transactionRequesting" class="row">
+  <app-spinner></app-spinner>
+</div>
+
+<div *ngIf="isWalletsOpen" novalidate class="row">
+  <div class="col-md-12">
+    <h3>Sort by date, time</h3>
+    <form class="form-inline" #myForm="ngForm" (ngSubmit)="sortByDateTime(myForm)">
+      <div class="form-group">
+        <label for="dateFrom">From:</label>
+        <input type="date" class="form-control" name="dateFrom" ngModel required>
+        <input type="time" class="form-control" name="timeFrom" ngModel required>
+      </div>
+      <div class="form-group">
+        <label for="dateTo">To:</label>
+        <input type="date" class="form-control" name="dateTo" ngModel required>
+        <input type="time" class="form-control" name="timeTo" ngModel required>
+      </div>
+      <button [disabled]="myForm.invalid" type="submit" class="btn btn-default"> Sort </button>
+      <button *ngIf="isSortByDateTime" (click)="removeDateTimeSorting()" type="button" class="btn btn-danger">Remove</button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="transactionRequesting" class="row tabsRow">
+  <ul class="nav nav-tabs">
+    <li [ngClass]="transactionTabClass" class="tab" (click)="SwitchToTransactions()"><a>Transactions</a></li>
+    <li [ngClass]="walletsTabClass" class="tab" (click)="SwitchToWallets()"><a>Wallets</a></li>
+  </ul>
+</div>
+
+<div *ngIf="transactionRequesting && isTransactionsOpen" class="row tableRow">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">TxHash</th>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Date/Time</th>
+        <th scope="col">Success</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let trans of transactionsModel.transactions">
+        <th title="{{trans.transactionHash}}">{{trans.transactionHash | slice : 0:20}}...</th>
+        <td title="{{trans.fromAddress}}">
+          <a [routerLink]='["/search",trans.fromAddress]'>
+            {{trans.fromAddress | slice : 0:20}}...
+          </a>
+        </td>
+        <td title="{{trans.toAddress}}">
+          <a [routerLink]='["/search",trans.toAddress]'>
+            {{trans.toAddress | slice : 0:20}}...
+          </a>
+        </td>
+        <td title="{{trans.decimalValue}}">{{trans.decimalValue | number : '1.2-5'}}</td>
+        <td title="{{trans.date }}">{{trans.date | date : 'short' }}</td>
+        <td title="{{trans.isSuccess}}">{{trans.isSuccess}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="col-md-12 text-center">
+    <div *ngIf="moreTransactionRequesting" class="row">
+      <app-spinner></app-spinner>
+    </div>
+    <button (click)="loadTransaction(transactionsModel.skipElementsNumber)" class="btn btn-primary">More</button>
+  </div>
+</div>
+
+<div *ngIf="transactionRequesting && isWalletsOpen" class="row tableRow">
+  <div *ngIf="!holdersRequested" class="row">
+    <app-spinner></app-spinner>
+  </div>
+  <table *ngIf="holdersRequested" class="table table-striped">
+    <thead>
+    <tr>
+      <th rowspan="2" scope="col">
+        <p class="walletsTableTh">Wallet <br/> Address </p> </th>
+      <th rowspan="2" scope="col">
+        <p class="sortLink walletsTableTh" (click)="Sort('Quantity')">
+          Quantity
+          <span *ngIf="!sortByQuantity" class="glyphicon glyphicon-triangle-top"></span>
+          <span *ngIf="sortByQuantity" class="glyphicon glyphicon-triangle-bottom"></span>
+        </p>
+      </th>
+      <th rowspan="2" scope="col">
+        <p class="sortLink walletsTableTh" (click)="Sort('TokensSent')">Tokens Sent
+          <span *ngIf="!sortByTokensSent" class="glyphicon glyphicon-triangle-top"></span>
+          <span *ngIf="sortByTokensSent" class="glyphicon glyphicon-triangle-bottom"></span>
+        </p>
+      </th>
+      <th rowspan="2" scope="col">
+        <p class="sortLink walletsTableTh" (click)="Sort('TokensReceived')">Tokens Received
+          <span *ngIf="!sortByTokensReceived" class="glyphicon glyphicon-triangle-top"></span>
+          <span *ngIf="sortByTokensReceived" class="glyphicon glyphicon-triangle-bottom"></span>
+        </p>
+      </th>
+      <th colspan="3" scope="col" class="text-center">Transactions Number</th>
+    </tr>
+    <tr>
+      <th scope="col" class="sortLink" (click)="Sort('GeneralTxNumber')">General
+        <span *ngIf="!sortByGeneralTxNumber" class="glyphicon glyphicon-triangle-top"></span>
+        <span *ngIf="sortByGeneralTxNumber" class="glyphicon glyphicon-triangle-bottom"></span>
+      </th>
+      <th scope="col" class="sortLink" (click)="Sort('SentTxNumber')">Sent
+        <span *ngIf="!sortBySentTxNumber" class="glyphicon glyphicon-triangle-top"></span>
+        <span *ngIf="sortBySentTxNumber" class="glyphicon glyphicon-triangle-bottom"></span>
+      </th>
+      <th scope="col" class="sortLink" (click)="Sort('ReceivedTxNumber')">Received
+        <span *ngIf="!sortByReceivedTxNumber" class="glyphicon glyphicon-triangle-top"></span>
+        <span *ngIf="sortByReceivedTxNumber" class="glyphicon glyphicon-triangle-bottom"></span>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let holder of tokenHolders">
+      <th title="{{holder.address}}">
+        <a [routerLink]='["/search/account",holder.address]'>
+          {{holder.address | slice : 0:20}}...
+        </a>       
+      </th>
+      <td title="{{holder.quantity}}">{{holder.quantity | number : '1.2-5'}}</td>
+      <td title="{{holder.tokensSent}}">{{holder.tokensSent | number : '1.2-5'}}</td>
+      <td title="{{holder.tokensReceived}}">{{holder.tokensReceived | number : '1.2-5'}}</td>
+      <td title="{{holder.generalTransactionsNumber}}">{{holder.generalTransactionsNumber}}</td>
+      <td title="{{holder.sentTransactionsNumber}}">{{holder.sentTransactionsNumber}}</td>
+      <td title="{{holder.receivedTransactionsNumber}}">{{holder.receivedTransactionsNumber}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="col-md-12 text-center">
+    <div *ngIf="moreTransactionRequesting" class="row">
+      <app-spinner></app-spinner>
+    </div>
+    <button (click)="loadMoreHoldersInfo()" class="btn btn-primary">More</button>
+  </div>
+</div>
+

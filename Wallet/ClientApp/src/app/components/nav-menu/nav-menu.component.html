@@ -1,0 +1,45 @@
+<nav class="navbar">
+  <div class="container-fluid">
+    <div class='navbar-header'>
+      <a class='navbar-brand' [routerLink]='["/"]'>Blowaud.com <br/><p>Blockchain Wallets Audit</p></a>
+    </div>
+
+    <ul *ngIf="status" class="nav navbar-nav navbar-right">
+      <li *ngIf="isAdmin" [routerLinkActive]='["link-active"]'>
+        <a [routerLink]='["/admin-panel"]'>
+          <span class="glyphicon glyphicon-wrench"></span> Manage
+        </a>
+      </li>
+      <li *ngIf="!isWatchlistPage" [routerLinkActive]='["link-active"]'>
+        <a [routerLink]='["/watchlist"]'>
+          <span class="glyphicon glyphicon-user"></span> Watchlist
+        </a>
+      </li>
+      <li *ngIf="isWatchlistPage" [routerLinkActive]='["link-active"]'>
+        <a [routerLink]='["/"]'>
+          <span class="glyphicon glyphicon-home"></span> Home
+        </a>
+      </li>
+      <li [routerLinkActive]='["link-active"]'>
+        <a class="nav-link" (click)="logout()" href="#">
+          <span class="glyphicon glyphicon-log-out"></span> Log out
+        </a>
+      </li>
+    </ul>
+
+    <ul *ngIf="!status" class="nav navbar-nav navbar-right">
+      <li [routerLinkActive]='["link-active"]'>
+        <a [routerLink]='["/sign-in"]'>
+          <span class="glyphicon glyphicon-user"></span> Sign In
+        </a>
+      </li>
+      <li [routerLinkActive]='["link-active"]'>
+        <a [routerLink]='["/log-in"]'>
+          <span class="glyphicon glyphicon-log-in"></span> Log In
+        </a>
+      </li>
+    </ul>
+
+  </div>
+  <hr/>
+</nav>
